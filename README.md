@@ -2,7 +2,18 @@
 
 generated using Luminus version "2.9.11.90"
 
-FIXME
+
+## invoke DB web console
+```
+java -cp h2*.jar org.h2.tools.Server -webAllowOthers
+```
+
+## initalization of Database
+
+```
+(intowow.db.core/write-ratings) ;; write ua.base into DB
+(intowow.db.core/write-movies)  ;; write u.item into DB
+```
 
 ## Prerequisites
 
