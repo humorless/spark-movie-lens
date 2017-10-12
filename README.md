@@ -11,8 +11,8 @@ java -cp h2*.jar org.h2.tools.Server -webAllowOthers
 ## initalization of Database
 
 ```
-(intowow.db.core/write-ratings) ;; write ua.base into DB
-(intowow.db.core/write-movies)  ;; write u.item into DB
+(intowow.db.core/init-ratings!) ;; write ua.base into DB
+(intowow.db.core/init-movies!)  ;; write u.item into DB
 ```
 
 ## Prerequisites
