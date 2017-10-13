@@ -1,8 +1,8 @@
 -- :name create-user! :! :n
 -- :doc creates a new user record
 INSERT INTO users
-(id, email, pass)
-VALUES (:id, :email, :pass)
+(id, email, pass, sess)
+VALUES (:id, :email, :pass, :sess)
 
 -- :name update-user! :! :n
 -- :doc update an existing user record
@@ -10,10 +10,15 @@ UPDATE users
 SET email = :email
 WHERE id = :id
 
--- :name get-user :? :1
--- :doc retrieve a user given the id.
+-- :name get-user-by-email :? :1
+-- :doc retrieve a user given the email
 SELECT * FROM users
-WHERE id = :id
+WHERE email = :email
+
+-- :name get-user-by-sess :? :1
+-- :doc retrieve a user given the session id
+SELECT * FROM users
+WHERE sess = :sess
 
 -- :name delete-user! :! :n
 -- :doc delete a user given the id

@@ -7,7 +7,7 @@
                  [clj-time "0.14.0"]
                  [com.h2database/h2 "1.4.196"]
                  [compojure "1.6.0"]
-                 [conman "0.6.8"]
+                 [conman "0.6.9"]
                  [cprop "0.1.11"]
                  [funcool/struct "1.1.0"]
                  [luminus-immutant "0.2.3"]
@@ -64,7 +64,7 @@
                   :source-paths ["env/dev/clj"]
                   :resource-paths ["env/dev/resources"]
                   :repl-options {:init-ns user
-                                 :timeout 120000}
+                                 :timeout 180000}
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]}
    :project/test {:resource-paths ["env/test/resources"]}

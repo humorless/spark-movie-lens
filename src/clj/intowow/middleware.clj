@@ -1,5 +1,6 @@
 (ns intowow.middleware
   (:require [intowow.env :refer [defaults]]
+            [intowow.db.core :as db]
             [cognitect.transit :as transit]
             [clojure.tools.logging :as log]
             [intowow.layout :refer [*app-context* error-page]]
@@ -46,30 +47,30 @@
 
 (defn wrap-csrf [handler]
   (wrap-anti-forgery
-    handler
-    {:error-response
-     (error-page
-       {:status 403
-        :title "Invalid anti-forgery token"})}))
+   handler
+   {:error-response
+    (error-page
+     {:status 403
+      :title "Invalid anti-forgery token"})}))
 
 (def joda-time-writer
   (transit/write-handler
-    (constantly "m")
-    (fn [v] (-> ^ReadableInstant v .getMillis))
-    (fn [v] (-> ^ReadableInstant v .getMillis .toString))))
+   (constantly "m")
+   (fn [v] (-> ^ReadableInstant v .getMillis))
+   (fn [v] (-> ^ReadableInstant v .getMillis .toString))))
 
 (def restful-format-options
   (update
-    muuntaja/default-options
-    :formats
-    merge
-    {"application/transit+json"
-     {:decoder [(partial transit-format/make-transit-decoder :json)]
-      :encoder [#(transit-format/make-transit-encoder
-                   :json
-                   (merge
-                     %
-                     {:handlers {org.joda.time.DateTime joda-time-writer}}))]}}))
+   muuntaja/default-options
+   :formats
+   merge
+   {"application/transit+json"
+    {:decoder [(partial transit-format/make-transit-decoder :json)]
+     :encoder [#(transit-format/make-transit-encoder
+                 :json
+                 (merge
+                  %
+                  {:handlers {org.joda.time.DateTime joda-time-writer}}))]}}))
 
 (defn wrap-formats [handler]
   (let [wrapped (-> handler wrap-params (wrap-format restful-format-options))]
@@ -80,16 +81,21 @@
 
 (defn on-error [request response]
   (error-page
-    {:status 403
-     :title (str "Access to " (:uri request) " is not authorized")}))
+   {:status 403
+    :title (str "Access to " (:uri request) " is not authorized")}))
 
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
                      :on-error on-error}))
 
+(defn wrap-user [handler]
+  (fn [{user-sess-id :identity :as req}]
+    (handler (assoc req :user (db/get-user-by-sess {:sess user-sess-id})))))
+
 (defn wrap-auth [handler]
   (let [backend (session-backend)]
     (-> handler
+        (wrap-user)
         (wrap-authentication backend)
         (wrap-authorization backend))))
 
@@ -100,8 +106,8 @@
       wrap-flash
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-defaults
-        (-> site-defaults
-            (assoc-in [:security :anti-forgery] false)
-            (dissoc :session)))
+       (-> site-defaults
+           (assoc-in [:security :anti-forgery] false)
+           (dissoc :session)))
       wrap-context
       wrap-internal-error))

@@ -27,10 +27,20 @@
        (map (fn [[m-id m-name]] {:id m-id :name m-name})
             (data/load-items "u.item"))))
 
-;; id-gen should be 1000 + count of user
-(def id-gen (atom 1000))
+(defn uuid [] (java.util.UUID/randomUUID))
 
-(defn store-create-user!
-  "store hash of pass into db."
+(defn user-register!
+  " if not exists email, store (email, hash(pass)) into db.
+    else return false"
   [email pass]
-  (create-user! {:id (swap! id-gen inc) :email email :pass (hs/encrypt pass)}))
+  (if (nil? (get-user-by-email {:email email}))
+    (create-user! {:id nil :email email :pass (hs/encrypt pass) :sess (uuid)})
+    false))
+
+(defn user-auth
+  " user-auth returns user record or false
+    get-user-by-email returns nil or {:id .., :pass ... :email ... }"
+  [email pass]
+  (if-let [user (get-user-by-email {:email email})]
+    (if (hs/check pass (:pass user)) user false)
+    false))
