@@ -25,7 +25,7 @@
   (if-let [user (db/user-auth email password)]
 
     ; If authenticated
-    (assoc (redirect "/")
+    (assoc (redirect "/data")
            :session (assoc session :identity (:sess user)))
 
     ; Otherwise
@@ -37,6 +37,9 @@
 
 (defn is-authenticated [{user :user :as req}]
   (not (nil? user)))
+
+(defroutes data-routes
+  (GET "/data" [] "hello data"))
 
 (defroutes home-routes
   (GET "/" [] (root-page))
