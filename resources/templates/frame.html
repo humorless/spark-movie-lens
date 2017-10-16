@@ -32,5 +32,10 @@
     </script>
     {% block page-scripts %}
     {% endblock %}
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.nav-tabs a[href="' + window.location.pathname + '"]').parents('li').addClass('active');
+      });
+    </script>
   </body>
 </html>
