@@ -20,6 +20,20 @@
 (defn get-login []
   (layout/render "login.html"))
 
+(defn get-accept []
+  (layout/render "accept.html"))
+
+(defn get-reject []
+  (layout/render "reject.html"))
+
+(defn get-register []
+  (layout/render "register.html"))
+
+(defn post-register [{{email "email" password "password"} :form-params}]
+  (if (db/user-register! email password)
+    (redirect "/accept")
+    (redirect "/reject")))
+
 (defn post-login [{{email "email" password "password"} :form-params
                    session :session :as req}]
   (if-let [user (db/user-auth email password)]
@@ -46,5 +60,9 @@
   (GET "/home" [] (home-page))
   (GET "/login" [] (get-login))
   (POST "/login" [] post-login)
+  (GET "/accept" [] (get-accept))
+  (GET "/reject" [] (get-reject))
+  (GET "/register" [] (get-register))
+  (POST "/register" [] post-register)
   (POST "/logout" [] post-logout)
   (GET "/about" [] (about-page)))
