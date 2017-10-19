@@ -1,0 +1,19 @@
+<ul class="nav nav-tabs">
+    <li class="disabled">
+        <a href="/">Recommended Movies</a>
+    </li>
+    <li class="disabled">
+        <a href="/rated">Rated Movies</a>
+    </li>
+    <li class="dropdown pull-right">
+         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<strong class="caret"></strong></a>
+        <ul class="dropdown-menu">
+            <li>
+                <form action="/logout" method="POST">
+                  {% csrf-field %}
+                  <a href="#" onclick="this.parentNode.submit()"><center>Logout</center></a>
+                </form>
+            </li>
+        </ul>
+    </li>
+</ul>

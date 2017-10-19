@@ -10,9 +10,12 @@
   (layout/render
    "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
 
-(defn root-page []
-  (layout/render "root.html"
-                 {:movies (db/get-movie-average)}))
+(defn root-page [{{id :identity} :session :as req}]
+  (if (nil? id)
+    (layout/render "root.html"
+                   {:movies (db/get-movie-average) :h2 "Hello Guest"})
+    (layout/render "user.html"
+                   {:movies (db/get-movie-average) :h2 id})))
 
 (defn about-page []
   (layout/render "about.html"))
@@ -53,10 +56,11 @@
   (not (nil? user)))
 
 (defroutes data-routes
-  (GET "/data" [] "hello data"))
+  (POST "/logout" [] post-logout)
+  (GET "/data" [] root-page))
 
 (defroutes home-routes
-  (GET "/" [] (root-page))
+  (GET "/" [] root-page)
   (GET "/home" [] (home-page))
   (GET "/login" [] (get-login))
   (POST "/login" [] post-login)
@@ -64,5 +68,4 @@
   (GET "/reject" [] (get-reject))
   (GET "/register" [] (get-register))
   (POST "/register" [] post-register)
-  (POST "/logout" [] post-logout)
   (GET "/about" [] (about-page)))
