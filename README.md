@@ -13,6 +13,7 @@ java -cp h2*.jar org.h2.tools.Server -webAllowOthers
 ```
 (intowow.db.core/init-ratings!) ;; write ua.base into DB
 (intowow.db.core/init-movies!)  ;; write u.item into DB
+(intowow.db.core/init-users!)   ;; write a dummy user into DB
 ```
 
 ## Prerequisites

@@ -40,6 +40,10 @@ VALUES :tuple*:ratings
 INSERT INTO movies (id, name)
 VALUES (:id, :name)
 
+-- :name get-movie-rating-by-id :? :*
+-- :doc retrieve ratings of movie of certain user id
+SELECT item_id, rating AS r, name  FROM RATINGS join MOVIES on item_id = id WHERE user_id = :id
+
 -- :name get-movie-average :? :*
 -- :doc retrieve average rating of movie
 SELECT item_id, ROUND(avg(rating * 1.0), 2) AS r, name FROM RATINGS join MOVIES on item_id = id GROUP BY item_id ORDER BY r DESC 

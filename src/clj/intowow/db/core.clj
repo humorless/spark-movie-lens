@@ -13,6 +13,8 @@
 
 (conman/bind-connection *db* "sql/queries.sql")
 
+(defn uuid [] (java.util.UUID/randomUUID))
+
 (defn init-ratings!
   "initialize movie rating in database"
   []
@@ -27,7 +29,10 @@
        (map (fn [[m-id m-name]] {:id m-id :name m-name})
             (data/load-items "u.item"))))
 
-(defn uuid [] (java.util.UUID/randomUUID))
+(defn init-users!
+  "initialize a dummy user in database"
+  []
+  (create-user! {:id 1000 :email "dummy@example.com" :pass (hs/encrypt "qwerty") :sess (uuid)}))
 
 (defn user-register!
   " if not exists email, store (email, hash(pass)) into db.
