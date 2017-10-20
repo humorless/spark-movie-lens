@@ -7,9 +7,6 @@
     <p>
        Here is the movie recommendation list
     </p>
-    <p>
-        <a class="btn btn-primary btn-large" href="#">Submit rating</a>
-    </p>
 </div>
 <table class="table">
     <thead>
@@ -21,7 +18,10 @@
                 movie name
             </th>
             <th>
-                average rating
+                guessing rating
+            </th>
+            <th>
+                my rating
             </th>
         </tr>
     </thead>
@@ -36,6 +36,26 @@
                 </td>
                 <td>
                     {{movie.r}}
+                </td>
+                <td>
+                   <form action="/submit_raing" style=" display:inline!important;">
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio">1
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio">2
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio">3
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio">4
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio">5
+                      </label>
+                      <input type="submit" value="Submit">
+                  </form>
                 </td>
             </tr>
         {% endfor %}

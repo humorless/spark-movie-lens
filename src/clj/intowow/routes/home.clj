@@ -23,9 +23,6 @@
     (layout/render "rated.html"
                    {:movies (db/get-movie-rating-by-id {:id id}) :h2 (:email user)})))
 
-(defn about-page []
-  (layout/render "about.html"))
-
 (defn get-login []
   (layout/render "login.html"))
 
@@ -74,5 +71,4 @@
   (GET "/accept" [] (get-accept))
   (GET "/reject" [] (get-reject))
   (GET "/register" [] (get-register))
-  (POST "/register" [] post-register)
-  (GET "/about" [] (about-page)))
+  (POST "/register" [] post-register))
