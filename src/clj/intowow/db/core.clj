@@ -34,6 +34,11 @@
   []
   (create-user! {:id 1000 :email "dummy@example.com" :pass (hs/encrypt "qwerty") :sess (uuid)}))
 
+(defn init-recommends!
+  "initialize a dummy recommend in database"
+  []
+  (create-recommend! {:id 1000 :rec (range 10)}))
+
 (defn user-register!
   " if not exists email, store (email, hash(pass)) into db.
     else return false"

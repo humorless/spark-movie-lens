@@ -4,6 +4,12 @@ INSERT INTO users
 (id, email, pass, sess)
 VALUES (:id, :email, :pass, :sess)
 
+-- :name create-recommend! :! :n
+-- :doc create a new recommend record
+INSERT INTO users_recommend
+(id, rec)
+VALUES (:id, (:v*:rec))
+
 -- :name update-user! :! :n
 -- :doc update an existing user record
 UPDATE users
