@@ -1,7 +1,7 @@
 (ns intowow.handler
   (:require [compojure.core :refer [routes wrap-routes]]
             [intowow.layout :refer [error-page]]
-            [intowow.routes.home :refer [home-routes data-routes]]
+            [intowow.routes.home :refer [home-routes data-routes submit-routes]]
             [compojure.route :as route]
             [intowow.env :refer [defaults]]
             [mount.core :as mount]
@@ -20,6 +20,9 @@
        (middleware/wrap-restricted)
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats))
+   (-> #'submit-routes
+       (middleware/wrap-restricted)
+       (middleware/wrap-formats))
    (route/not-found
     (:body
      (error-page {:status 404

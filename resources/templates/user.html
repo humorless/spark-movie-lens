@@ -38,22 +38,23 @@
                     {{movie.r}}
                 </td>
                 <td>
-                   <form action="/submit_raing" style=" display:inline!important;">
+                   <form action="/submit_rating" method="post" style=" display:inline!important;">
                       <label class="radio-inline">
-                        <input type="radio" name="optradio">1
+                        <input type="radio" name="optradio" value="1">1
                       </label>
                       <label class="radio-inline">
-                        <input type="radio" name="optradio">2
+                        <input type="radio" name="optradio" value="2">2
                       </label>
                       <label class="radio-inline">
-                        <input type="radio" name="optradio">3
+                        <input type="radio" name="optradio" value="3">3
                       </label>
                       <label class="radio-inline">
-                        <input type="radio" name="optradio">4
+                        <input type="radio" name="optradio" value="4">4
                       </label>
                       <label class="radio-inline">
-                        <input type="radio" name="optradio">5
+                        <input type="radio" name="optradio" value="5">5
                       </label>
+                      <input type="hidden" name="itemid" value="{{movie.item_id}}">
                       <input type="submit" value="Submit">
                   </form>
                 </td>

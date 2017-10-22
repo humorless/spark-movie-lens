@@ -4,6 +4,7 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [intowow.db.core :as db]
+            [clojure.tools.logging :as log]
             [clojure.java.io :as io]))
 
 (defn home-page []
@@ -16,7 +17,7 @@
                    {:movies (db/get-movie-average) :h2 "Hello Guest"})
     (let [{E :email :as user} (db/get-user-by-sess {:sess user-sess-id})]
       (layout/render "user.html"
-                     {:movies (db/get-movie-average) :h2 E}))))
+                     {:movies (take 100 (db/get-movie-average)) :h2 E}))))
 
 (defn rated-page [{{user-sess-id :identity} :session :as req}]
   (let [{id :id  :as user} (db/get-user-by-sess  {:sess user-sess-id})]
@@ -55,13 +56,18 @@
   (assoc (redirect "/login")
          :session (dissoc session :identity)))
 
-(defn is-authenticated [{user :user :as req}]
-  (not (nil? user)))
+(defn post-rating [{{opt "optradio" itemid "itemid"} :form-params session :session :as req}]
+  (log/info opt itemid)
+  (redirect "/data"))
 
 (defroutes data-routes
   (POST "/logout" [] post-logout)
   (GET "/rated" [] rated-page)
   (GET "/data" [] root-page))
+
+(defroutes submit-routes
+  ;; submit_rating has no csrf checking
+  (POST "/submit_rating" [] post-rating))
 
 (defroutes home-routes
   (GET "/" [] root-page)
