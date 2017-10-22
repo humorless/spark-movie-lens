@@ -26,11 +26,6 @@ DELETE FROM users
 WHERE id = :id
 
 -- :name create-ratings! :! :n
--- :doc create a rating record
-INSERT INTO ratings (user_id, item_id, rating)
-VALUES (:user_id, :item_id, :rating)
-
--- :name create-ratings! :! :n
 -- :doc create multiple rating records with :tuple* parameter type
 INSERT INTO ratings (user_id, item_id, rating)
 VALUES :tuple*:ratings

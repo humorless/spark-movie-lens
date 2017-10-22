@@ -56,9 +56,13 @@
   (assoc (redirect "/login")
          :session (dissoc session :identity)))
 
-(defn post-rating [{{opt "optradio" itemid "itemid"} :form-params session :session :as req}]
-  (log/info opt itemid)
-  (redirect "/data"))
+(defn post-rating [{{opt "optradio" itemid "itemid"} :form-params {user-sess-id :identity} :session :as req}]
+  (let [{id :id  :as user} (db/get-user-by-sess  {:sess user-sess-id})]
+    (log/info "user_id: " id "itemid: " itemid "rating" opt "type of opt:" (class opt))
+    (if (nil? opt)
+      (layout/render "empty-submit.html")
+      (do (db/create-ratings! {:ratings [[id itemid (Integer/parseInt opt)]]})
+          (redirect "/data")))))
 
 (defroutes data-routes
   (POST "/logout" [] post-logout)
