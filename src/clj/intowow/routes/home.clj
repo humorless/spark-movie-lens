@@ -11,13 +11,24 @@
   (layout/render
    "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
 
+(defn recommend-movies
+  "This function implement the requirement #6"
+  [uid]
+  (let [item-id-set (set (mapv :item_id (db/get-movie-rating-by-id {:id uid})))
+        raw-recommend-list (db/get-movie-average)]
+    (remove
+     #(item-id-set (:item_id %))
+     raw-recommend-list)))
+
 (defn root-page [{{user-sess-id :identity} :session :as req}]
   (if (nil? user-sess-id)
     (layout/render "root.html"
-                   {:movies (db/get-movie-average) :h2 "Hello Guest"})
-    (let [{E :email :as user} (db/get-user-by-sess {:sess user-sess-id})]
+                   {:movies (db/get-movie-average)
+                    :h2 "Hello Guest"})
+    (let [{uid :id E :email :as user} (db/get-user-by-sess {:sess user-sess-id})]
       (layout/render "user.html"
-                     {:movies (take 100 (db/get-movie-average)) :h2 E}))))
+                     {:movies (take 100 (recommend-movies uid))
+                      :h2 E}))))
 
 (defn rated-page [{{user-sess-id :identity} :session :as req}]
   (let [{id :id  :as user} (db/get-user-by-sess  {:sess user-sess-id})]
