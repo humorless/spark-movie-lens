@@ -5,6 +5,8 @@
             [ring.util.response :refer [redirect]]
             [intowow.db.core :as db]
             [clojure.tools.logging :as log]
+            [cheshire.core :refer :all]
+            [hiccup.core :refer :all]
             [clojure.java.io :as io]))
 
 (defn home-page []
@@ -20,15 +22,40 @@
      #(item-id-set (:item_id %))
      raw-recommend-list)))
 
+;; user-submit-form use html function from hiccup
+(defn user-submit-form [iid]
+  (html [:form {:action "/submit_rating" :method "post" :style "display:inline!important;"}
+         (for [x (range 1 6)]
+           [:label {:class "radio-inline"}
+            [:input {:type "radio" :name "optradio" :value (str x)}
+             x]])
+         [:input {:type "hidden" :name "itemid" :value (str iid)}]
+         [:input {:type "submit" :value "Submit"}]]))
+
+;; server-side processing function
+(defn data-page [{{uid "uid" start "start" length "length" draw "draw"}
+                  :form-params :as req}]
+  (log/info "uid: " uid "start: " start "length: " length "type of uid: " (class uid))
+  (let [u (Integer/parseInt uid)
+        s (Integer/parseInt start)
+        len (Integer/parseInt length)
+        d (Integer/parseInt draw)
+        data (recommend-movies  u)
+        page  (mapv #(vector (:item_id %) (:name %)  (:r %)  (user-submit-form  (:item_id %)))
+                    (drop s (take (+ s len) data)))]
+    (generate-string
+     {:draw d
+      :recordsTotal (count data)
+      :recordsFiltered (count data)
+      :data page})))
+
 (defn root-page [{{user-sess-id :identity} :session :as req}]
   (if (nil? user-sess-id)
     (layout/render "root.html"
                    {:movies (db/get-movie-average)
                     :h2 "Hello Guest"})
     (let [{uid :id E :email :as user} (db/get-user-by-sess {:sess user-sess-id})]
-      (layout/render "user.html"
-                     {:movies (take 100 (recommend-movies uid))
-                      :h2 E}))))
+      (layout/render "user.html" {:h2 E :uid uid}))))
 
 (defn rated-page [{{user-sess-id :identity} :session :as req}]
   (let [{id :id  :as user} (db/get-user-by-sess  {:sess user-sess-id})]
@@ -82,6 +109,7 @@
 
 (defroutes submit-routes
   ;; submit_rating has no csrf checking
+  (POST "/data-page" [] data-page)
   (POST "/submit_rating" [] post-rating))
 
 (defroutes home-routes

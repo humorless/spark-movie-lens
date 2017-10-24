@@ -25,41 +25,5 @@
             </th>
         </tr>
     </thead>
-    <tbody>
-        {% for movie in movies %}
-            <tr>
-                <td>
-                    {{movie.item_id}}
-                </td>
-                <td>
-                    {{movie.name}}
-                </td>
-                <td>
-                    {{movie.r}}
-                </td>
-                <td>
-                   <form action="/submit_rating" method="post" style=" display:inline!important;">
-                      <label class="radio-inline">
-                        <input type="radio" name="optradio" value="1">1
-                      </label>
-                      <label class="radio-inline">
-                        <input type="radio" name="optradio" value="2">2
-                      </label>
-                      <label class="radio-inline">
-                        <input type="radio" name="optradio" value="3">3
-                      </label>
-                      <label class="radio-inline">
-                        <input type="radio" name="optradio" value="4">4
-                      </label>
-                      <label class="radio-inline">
-                        <input type="radio" name="optradio" value="5">5
-                      </label>
-                      <input type="hidden" name="itemid" value="{{movie.item_id}}">
-                      <input type="submit" value="Submit">
-                  </form>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
 </table>
 {% endblock %}

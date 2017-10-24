@@ -4,12 +4,14 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[buddy "1.3.0"]
+                 [cheshire "5.8.0"]
                  [clj-time "0.14.0"]
                  [com.h2database/h2 "1.4.196"]
                  [compojure "1.6.0"]
                  [conman "0.6.9"]
                  [cprop "0.1.11"]
                  [funcool/struct "1.1.0"]
+                 [hiccup "1.0.5"]
                  [luminus-immutant "0.2.3"]
                  [luminus-migrations "0.4.2"]
                  [luminus-nrepl "0.1.4"]
