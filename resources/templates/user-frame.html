@@ -9,6 +9,7 @@
     {% style "/assets/bootstrap/css/bootstrap.min.css" %}
     {% style "/assets/font-awesome/css/font-awesome.min.css" %}
 
+    {% style "/css/datatables.min.css" %}
     {% style "/css/screen.css" %}
   </head>
   <body>
@@ -26,6 +27,7 @@
     {% script "/assets/jquery/jquery.min.js" %}
     {% script "/assets/tether/dist/js/tether.min.js" %}
     {% script "/assets/bootstrap/js/bootstrap.min.js" %}
+    {% script "/js/datatables.min.js" %}
 
     <script type="text/javascript">
       var context = "{{servlet-context}}";
@@ -35,6 +37,9 @@
     <script type="text/javascript">
       $(document).ready(function() {
         $('.nav-tabs a[href="' + window.location.pathname + '"]').parents('li').addClass('active');
+      });
+      $(document).ready(function() {
+        $('#movie-table').DataTable();
       });
     </script>
   </body>
