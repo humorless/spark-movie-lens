@@ -37,7 +37,15 @@
     <script type="text/javascript">
       $(document).ready(function() {
         $('.nav-tabs a[href="' + window.location.pathname + '"]').parents('li').addClass('active');
-        $('#movie-table').DataTable();
+        $('#movie-table').DataTable({
+          "processing": true,
+          "serverSide": true,
+          "searching": false,
+          "ajax": {
+            "url": "/guest-data-page",
+            "type": "POST",
+          }
+        });
       });
     </script>
   </body>

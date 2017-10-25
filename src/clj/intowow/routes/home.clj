@@ -32,6 +32,20 @@
          [:input {:type "hidden" :name "itemid" :value (str iid)}]
          [:input {:type "submit" :value "Submit"}]]))
 
+(defn guest-data-page [{{start "start" length "length" draw "draw"}
+                        :form-params :as req}]
+  (let [s (Integer/parseInt start)
+        len (Integer/parseInt length)
+        d (Integer/parseInt draw)
+        data (db/get-movie-average)
+        page (mapv #(vector (:item_id %) (:name %) (:r %))
+                   (drop s (take (+ s len) data)))]
+    (generate-string
+     {:draw d
+      :recordsTotal (count data)
+      :recordsFiltered (count data)
+      :data page})))
+
 ;; server-side processing function
 (defn data-page [{{uid "uid" start "start" length "length" draw "draw"}
                   :form-params :as req}]
@@ -40,7 +54,7 @@
         s (Integer/parseInt start)
         len (Integer/parseInt length)
         d (Integer/parseInt draw)
-        data (recommend-movies  u)
+        data (recommend-movies u)
         page  (mapv #(vector (:item_id %) (:name %)  (:r %)  (user-submit-form  (:item_id %)))
                     (drop s (take (+ s len) data)))]
     (generate-string
@@ -52,10 +66,10 @@
 (defn root-page [{{user-sess-id :identity} :session :as req}]
   (if (nil? user-sess-id)
     (layout/render "root.html"
-                   {:movies (db/get-movie-average)
-                    :h2 "Hello Guest"})
+                   {:h2 "Hello Guest"})
     (let [{uid :id E :email :as user} (db/get-user-by-sess {:sess user-sess-id})]
-      (layout/render "user.html" {:h2 E :uid uid}))))
+      (layout/render "user.html"
+                     {:h2 E :uid uid}))))
 
 (defn rated-page [{{user-sess-id :identity} :session :as req}]
   (let [{id :id  :as user} (db/get-user-by-sess  {:sess user-sess-id})]
@@ -111,6 +125,9 @@
   ;; submit_rating has no csrf checking
   (POST "/data-page" [] data-page)
   (POST "/submit_rating" [] post-rating))
+
+(defroutes guest-data-routes
+  (POST "/guest-data-page" [] guest-data-page))
 
 (defroutes home-routes
   (GET "/" [] root-page)

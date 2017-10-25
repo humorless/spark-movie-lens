@@ -1,7 +1,7 @@
 (ns intowow.handler
   (:require [compojure.core :refer [routes wrap-routes]]
             [intowow.layout :refer [error-page]]
-            [intowow.routes.home :refer [home-routes data-routes submit-routes]]
+            [intowow.routes.home :refer [home-routes data-routes guest-data-routes submit-routes]]
             [compojure.route :as route]
             [intowow.env :refer [defaults]]
             [mount.core :as mount]
@@ -13,6 +13,8 @@
 
 (def app-routes
   (routes
+   (-> #'guest-data-routes
+       (middleware/wrap-formats))
    (-> #'home-routes
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats))
