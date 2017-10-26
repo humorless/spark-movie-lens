@@ -35,6 +35,10 @@ VALUES :tuple*:ratings
 INSERT INTO movies (id, name)
 VALUES (:id, :name)
 
+-- :name get-movies :? :*
+-- :doc retrieve all the movie id and name
+SELECT * FROM MOVIES;
+
 -- :name get-movie-rating-by-id :? :*
 -- :doc retrieve ratings of movie of certain user id
 SELECT item_id, rating AS r, name  FROM RATINGS join MOVIES on item_id = id WHERE user_id = :id

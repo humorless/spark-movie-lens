@@ -3,7 +3,10 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [[buddy "1.3.0"]
+  :dependencies [[gorillalabs/sparkling  "1.2.2"]
+                 [org.apache.spark/spark-mllib_2.10  "1.1.0" :exclusions  [com.google.guava/guava org.slf4j/slf4j-log4j12]]
+                 [org.apache.spark/spark-core_2.10  "1.1.0" :exclusions  [com.google.guava/guava com.thoughtworks.paranamer/paranamer org.slf4j/slf4j-log4j12]]
+                 [buddy "1.3.0"]
                  [cheshire "5.8.0"]
                  [clj-time "0.14.0"]
                  [com.h2database/h2 "1.4.196"]
@@ -71,4 +74,5 @@
                                (pjstadig.humane-test-output/activate!)]}
    :project/test {:resource-paths ["env/test/resources"]}
    :profiles/dev {}
-   :profiles/test {}})
+   :profiles/test {}}
+   :aot [intowow.sparkling clojure.tools.logging.impl sparkling.serialization sparkling.destructuring])
