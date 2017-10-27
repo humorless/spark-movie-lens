@@ -26,6 +26,14 @@
   (->> (spark/text-file sc "resources/ua.base")
        (spark/map-to-pair parse-rating)))
 
+(defn trans-rating [item]
+  (spark/tuple (rand-int 10)
+               (Rating. (:user_id item) (:item_id item) (:rating item))))
+
+(defn get-db-ratings [sc]
+  (->> (spark/parallelize sc (apply vector (db/get-movie-ratings)))
+       (spark/map-to-pair trans-rating)))
+
 (defn training-ratings [ratings]
   (->> ratings
        (spark/filter (fn [tuple]
@@ -39,6 +47,12 @@
                                               lambda]}]
   (ALS/train (to-mllib-rdd data) rank num-iter lambda 10))
 
+(def c (-> (conf/spark-conf)
+           (conf/master "local")
+           (conf/app-name "sparkling")))
+
+(def ssc (spark/spark-context c))
+
 (defn ex-7-39 []
   (spark/with-context sc (-> (conf/spark-conf)
                              (conf/master "local")
@@ -49,8 +63,8 @@
           options {:rank 10
                    :num-iter 10
                    :lambda 1.0}
-          model (-> (parse-ratings sc)
-                    (training-ratings)
+          model (-> (get-db-ratings sc)
+                    (spark/values)
                     (alternating-least-squares options))]
       (->> (.recommendProducts model 1 3)
            (map (comp id->name #(.product %)))))))

@@ -45,4 +45,8 @@ SELECT item_id, rating AS r, name  FROM RATINGS join MOVIES on item_id = id WHER
 
 -- :name get-movie-average :? :*
 -- :doc retrieve average rating of movie
-SELECT item_id, ROUND(avg(rating * 1.0), 2) AS r, name FROM RATINGS join MOVIES on item_id = id GROUP BY item_id ORDER BY r DESC 
+SELECT item_id, ROUND(avg(rating * 1.0), 2) AS r, name FROM RATINGS join MOVIES on item_id = id GROUP BY item_id ORDER BY r DESC
+
+-- :name get-movie-ratings :? :*
+-- :doc retrieve all rating of movie
+SELECT user_id, item_id, rating FROM RATINGS;
