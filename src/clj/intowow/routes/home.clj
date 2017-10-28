@@ -1,5 +1,6 @@
 (ns intowow.routes.home
-  (:require [intowow.layout :as layout]
+  (:require [intowow.sparkling :as spk]
+            [intowow.layout :as layout]
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
@@ -13,11 +14,15 @@
   (layout/render
    "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
 
+(def item-count 1680)
+
 (defn recommend-movies
-  "This function implement the requirement #6"
+  "Output format is:
+   ({:item_id 1642, :name \"Some Mother's Son  (1996)\", :r 3.506496566645136}
+    ... "
   [uid]
   (let [item-id-set (set (mapv :item_id (db/get-movie-rating-by-id {:id uid})))
-        raw-recommend-list (db/get-movie-average)]
+        raw-recommend-list (map #(zipmap [:item_id :name :r] %) (spk/recommend uid item-count))]
     (remove
      #(item-id-set (:item_id %))
      raw-recommend-list)))
@@ -57,6 +62,7 @@
         data (recommend-movies u)
         page  (mapv #(vector (:item_id %) (:name %)  (:r %)  (user-submit-form  (:item_id %)))
                     (drop s (take (+ s len) data)))]
+    (log/info (take 2 data))
     (generate-string
      {:draw d
       :recordsTotal (count data)
