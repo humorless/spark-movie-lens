@@ -22,7 +22,9 @@
     ... "
   [uid]
   (let [item-id-set (set (mapv :item_id (db/get-movie-rating-by-id {:id uid})))
-        raw-recommend-list (map #(zipmap [:item_id :name :r] %) (spk/recommend uid item-count))]
+        raw-recommend-list (if (empty? item-id-set)
+                             (db/get-movie-average)
+                             (map #(zipmap [:item_id :name :r] %) (spk/recommend uid item-count)))]
     (remove
      #(item-id-set (:item_id %))
      raw-recommend-list)))
