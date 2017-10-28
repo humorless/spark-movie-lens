@@ -6,6 +6,10 @@
             [intowow.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
+            [chime :as chime]
+            [clj-time.core :as time]
+            [clj-time.periodic :as periodic]
+            [intowow.sparkling :as spark]
             [mount.core :as mount])
   (:gen-class))
 
@@ -14,24 +18,36 @@
     :parse-fn #(Integer/parseInt %)]])
 
 (mount/defstate ^{:on-reload :noop}
-                http-server
-                :start
-                (http/start
-                  (-> env
-                      (assoc :handler (handler/app))
-                      (update :port #(or (-> env :options :port) %))))
-                :stop
-                (http/stop http-server))
+  http-server
+  :start
+  (http/start
+   (-> env
+       (assoc :handler (handler/app))
+       (update :port #(or (-> env :options :port) %))))
+  :stop
+  (http/stop http-server))
 
 (mount/defstate ^{:on-reload :noop}
-                repl-server
-                :start
-                (when-let [nrepl-port (env :nrepl-port)]
-                  (repl/start {:port nrepl-port}))
-                :stop
-                (when repl-server
-                  (repl/stop repl-server)))
+  repl-server
+  :start
+  (when-let [nrepl-port (env :nrepl-port)]
+    (repl/start {:port nrepl-port}))
+  :stop
+  (when repl-server
+    (repl/stop repl-server)))
 
+(defn init-spark
+  "triggers timer to re-train model periodically"
+  []
+  (let [f-m (future (spark/re-train))
+        startdate (time/now)
+        interval 30
+        ev-seq (rest (periodic/periodic-seq startdate (time/seconds interval)))]
+    (chime/chime-at ev-seq (fn [time] (try
+                                        (log/info "train starts at" time)
+                                        (future (spark/re-train))
+                                        (catch Exception e
+                                          (log/error "Error in training schedule :" e)))))))
 
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
@@ -44,6 +60,7 @@
                         mount/start-with-args
                         :started)]
     (log/info component "started"))
+  (init-spark)
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
@@ -59,5 +76,4 @@
       (migrations/migrate args (select-keys env [:database-url]))
       (System/exit 0))
     :else
-    (start-app args))
-  )
+    (start-app args)))

@@ -56,8 +56,8 @@
   "create a new model.
    Class: org.apache.spark.mllib.recommendation.MatrixFactorizationModel"
   []
-  (let [options {:rank 10
-                 :num-iter 10
+  (let [options {:rank 8
+                 :num-iter 1
                  :lambda 1.0}]
     (-> (get-db-ratings sc)
         (spark/values)

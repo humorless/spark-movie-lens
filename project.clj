@@ -8,6 +8,7 @@
                  [org.apache.spark/spark-core_2.10  "1.1.0" :exclusions  [com.google.guava/guava com.thoughtworks.paranamer/paranamer org.slf4j/slf4j-log4j12]]
                  [buddy "1.3.0"]
                  [cheshire "5.8.0"]
+                 [jarohen/chime "0.2.2"]
                  [clj-time "0.14.0"]
                  [com.h2database/h2 "1.4.196"]
                  [compojure "1.6.0"]
