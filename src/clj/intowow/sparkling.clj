@@ -44,11 +44,11 @@
       (->> (.recommendProducts model 1 3)
            (map (comp id->name #(.product %)))))))
 
-(def c (-> (conf/spark-conf)
-           (conf/master "local[*]")
-           (conf/app-name "sparkling")))
-
-(def sc (spark/spark-context c))
+(def sc
+  (let [cfg (-> (conf/spark-conf)
+                (conf/master "local[*]")
+                (conf/app-name "sparkling"))]
+  (spark/spark-context cfg)))
 
 (def model (atom {}))
 

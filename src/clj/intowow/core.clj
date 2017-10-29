@@ -36,18 +36,23 @@
   (when repl-server
     (repl/stop repl-server)))
 
+(defn train-model []
+  (future
+    (log/info "model training starts at" (time/now))
+    (try
+      (spark/re-train)
+        (catch Exception e
+          (log/error "Error in model training :" e)))
+    (log/info "model training ends at" (time/now))))
+
 (defn init-spark
   "triggers timer to re-train model periodically"
   []
-  (let [f-m (future (spark/re-train))
-        startdate (time/now)
+  (let [startdate (time/now)
         interval 30
         ev-seq (rest (periodic/periodic-seq startdate (time/seconds interval)))]
-    (chime/chime-at ev-seq (fn [time] (try
-                                        (log/info "train starts at" time)
-                                        (future (spark/re-train))
-                                        (catch Exception e
-                                          (log/error "Error in training schedule :" e)))))))
+    (train-model)
+    (chime/chime-at ev-seq (fn [t] (train-model)))))
 
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
