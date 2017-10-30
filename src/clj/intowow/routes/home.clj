@@ -14,7 +14,7 @@
   (layout/render
    "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
 
-(def item-count 1680)
+(def item-count 1682)
 
 (defn recommend-movies
   "Output format is:

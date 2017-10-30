@@ -5,6 +5,7 @@ generated using Luminus version "2.9.11.90"
 ## initalization of Database
 
 ```
+lein run migrate
 lein repl
 (start)
 (ns intowow.db.core)
@@ -13,8 +14,9 @@ lein repl
 (init-users!)   ;; write a dummy user into DB
 ```
 
-## Debug: invoke DB web console
+## Database Debug: invoke DB web console
 ```
+wget http://repo2.maven.org/maven2/com/h2database/h2/1.4.196/h2-1.4.196.jar
 java -cp h2*.jar org.h2.tools.Server -webAllowOthers
 ```
 
@@ -34,8 +36,12 @@ sudo apt-get install libgfortran3
 
 To start a web server for the application, run:
 
-    lein run 
+    lein run
+
+Point chrome to http://localhost:3000
 
 ## License
 
-Copyright © 2017 FIXME
+Copyright © 2017 Laurence Chen
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
