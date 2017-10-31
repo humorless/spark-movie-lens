@@ -5,13 +5,7 @@ generated using Luminus version "2.9.11.90"
 ## initalization of Database
 
 ```
-lein run migrate
-lein repl
-(start)
-(ns intowow.db.core)
-(init-ratings!) ;; write ua.base into DB
-(init-movies!)  ;; write u.item into DB
-(init-users!)   ;; write a dummy user into DB
+lein migratus migrate
 ```
 
 ## Database Debug: invoke DB web console
