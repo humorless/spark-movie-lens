@@ -14,6 +14,17 @@
   (layout/render
    "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
 
+(defn recommend
+  "properly handle the exceptional case"
+  [uid number]
+  (let [raw-data (try
+                   (spk/recommend uid number)
+                   (catch Exception e nil))]
+    (log/info "recommend raw data with data type as: " (class raw-data) )
+    (if (nil? raw-data)
+      (db/get-movie-average)
+      (map #(zipmap [:item_id :name :r] %) raw-data))))
+
 (def item-count 1682)
 
 (defn recommend-movies
@@ -24,7 +35,7 @@
   (let [item-id-set (set (mapv :item_id (db/get-movie-rating-by-id {:id uid})))
         raw-recommend-list (if (empty? item-id-set)
                              (db/get-movie-average)
-                             (map #(zipmap [:item_id :name :r] %) (spk/recommend uid item-count)))]
+                             (recommend uid item-count))]
     (remove
      #(item-id-set (:item_id %))
      raw-recommend-list)))
