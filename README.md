@@ -1,4 +1,4 @@
-# intowow
+# spark-movie-lens
 
 generated using Luminus version "2.9.11.90"
 
@@ -8,17 +8,11 @@ generated using Luminus version "2.9.11.90"
 lein migratus migrate
 ```
 
-## Database Debug: invoke DB web console
-```
-wget http://repo2.maven.org/maven2/com/h2database/h2/1.4.196/h2-1.4.196.jar
-java -cp h2*.jar org.h2.tools.Server -webAllowOthers
-```
-
 ## Prerequisites
 
-You will need [Leiningen][1] 2.0 or above installed.
-
-Install libraries needed for spark.
+1. You will need [Leiningen][1] 2.0 or above installed.
+2. You will need to instll postgresql.
+3. Install libraries needed for spark.
 
 ```
 sudo apt-get install libgfortran3

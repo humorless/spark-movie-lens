@@ -1,2 +1,2 @@
-{:profiles/dev  {:env {:database-url "jdbc:h2:./intowow_dev.db"}}
- :profiles/test {:env {:database-url "jdbc:h2:./intowow_test.db"}}}
+{:profiles/dev  {:env {:database-url "jdbc:postgresql://localhost/intowow_dev?user=intowow&password=qwerty"}}
+ :profiles/test {:env {:database-url "jdbc:postgresql://localhost/intowow_test?user=intowow&password=qwerty"}}}

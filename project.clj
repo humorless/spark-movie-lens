@@ -4,11 +4,13 @@
   :url "https://github.com/humorless/spark-movie-lens"
 
   :dependencies [[gorillalabs/sparkling  "1.2.2"]
+                 [org.apache.spark/spark-mllib_2.10  "1.1.0" :exclusions  [com.google.guava/guava org.slf4j/slf4j-log4j12]]
+                 [org.apache.spark/spark-core_2.10  "1.1.0" :exclusions  [com.google.guava/guava com.thoughtworks.paranamer/paranamer org.slf4j/slf4j-log4j12]]
                  [buddy "1.3.0"]
                  [cheshire "5.8.0"]
                  [jarohen/chime "0.2.2"]
                  [clj-time "0.14.0"]
-                 [com.h2database/h2 "1.4.196"]
+                 [org.postgresql/postgresql "42.1.4"]
                  [compojure "1.6.0"]
                  [conman "0.6.9"]
                  [cprop "0.1.11"]
@@ -50,9 +52,7 @@
             [lein-immutant "2.1.0"]]
 
   :profiles
-  {:provided {:dependencies [[org.apache.spark/spark-mllib_2.10  "1.1.0" :exclusions  [com.google.guava/guava org.slf4j/slf4j-log4j12]]
-                             [org.apache.spark/spark-core_2.10  "1.1.0" :exclusions  [com.google.guava/guava com.thoughtworks.paranamer/paranamer org.slf4j/slf4j-log4j12]]]}
-   :uberjar {:omit-source true
+  {:uberjar {:omit-source true
              :aot :all
              :uberjar-name "intowow.jar"
              :source-paths ["env/prod/clj"]

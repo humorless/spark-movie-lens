@@ -30,7 +30,8 @@
             (data/load-items "u.item"))))
 
 (defn init-users!
-  "initialize a dummy user in database"
+  "Deprecated
+   initialize a dummy user in database"
   []
   (create-user! {:id 1000 :email "dummy@example.com" :pass (hs/encrypt "qwerty") :sess (uuid)}))
 
@@ -39,7 +40,7 @@
     else return false"
   [email pass]
   (if (nil? (get-user-by-email {:email email}))
-    (create-user! {:id nil :email email :pass (hs/encrypt pass) :sess (uuid)})
+    (create-user! {:email email :pass (hs/encrypt pass) :sess (uuid)})
     false))
 
 (defn user-auth

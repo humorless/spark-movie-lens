@@ -132,7 +132,7 @@
     (log/info "user_id: " id "itemid: " itemid "rating" opt "type of opt:" (class opt))
     (if (nil? opt)
       (layout/render "empty-submit.html")
-      (do (db/create-ratings! {:ratings [[id itemid (Integer/parseInt opt)]]})
+      (do (db/create-ratings! {:ratings [[id (Integer/parseInt itemid) (Integer/parseInt opt)]]})
           (redirect "/data")))))
 
 (defroutes data-routes
