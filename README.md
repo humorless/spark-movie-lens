@@ -11,8 +11,9 @@ lein migratus migrate
 ## Prerequisites
 
 1. You will need [Leiningen][1] 2.0 or above installed.
-2. You will need to instll postgresql.
-3. Install libraries needed for spark.
+2. You will need Java 8 or above installed.
+3. You will need to instll postgresql and pre-create user and database.
+4. Install libraries needed for spark.
 
 ```
 sudo apt-get install libgfortran3
@@ -27,6 +28,18 @@ To start a web server for the application, run:
     lein run
 
 Point chrome to http://localhost:3000
+
+### Check spark stages
+
+Point chrome to http://localhost:4040/stages/
+
+## Deployment
+
+After uberjar built.
+
+```
+java -Ddatabase-url="jdbc:postgresql://localhost/intowow_dev?user=intowow&password=qwerty" -jar target/uberjar/intowow.jar
+```
 
 ## License
 
