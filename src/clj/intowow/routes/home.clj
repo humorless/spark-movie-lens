@@ -16,16 +16,14 @@
 
 (defn recommend
   "properly handle the exceptional case"
-  [uid number]
+  [uid]
   (let [raw-data (try
-                   (spk/recommend uid number)
+                   (get @spk/model uid)
                    (catch Exception e nil))]
-    (log/info "recommend raw data with data type as: " (class raw-data) )
+    (log/info "recommend raw data with data type as: " (class raw-data))
     (if (nil? raw-data)
       (db/get-movie-average)
       (map #(zipmap [:item_id :name :r] %) raw-data))))
-
-(def item-count 1682)
 
 (defn recommend-movies
   "Output format is:
@@ -35,7 +33,7 @@
   (let [item-id-set (set (mapv :item_id (db/get-movie-rating-by-id {:id uid})))
         raw-recommend-list (if (empty? item-id-set)
                              (db/get-movie-average)
-                             (recommend uid item-count))]
+                             (recommend uid))]
     (remove
      #(item-id-set (:item_id %))
      raw-recommend-list)))
@@ -112,13 +110,17 @@
     (redirect "/accept")
     (redirect "/reject")))
 
+(def item-count 1682)
+
 (defn post-login [{{email "email" password "password"} :form-params
                    session :session :as req}]
   (if-let [user (db/user-auth email password)]
 
     ; If authenticated
-    (assoc (redirect "/data")
-           :session (assoc session :identity (:sess user)))
+    (do
+      (spk/update-user-guess! (:id user) item-count)
+      (assoc (redirect "/data")
+             :session (assoc session :identity (:sess user))))
 
     ; Otherwise
     (redirect "/login")))
@@ -133,6 +135,7 @@
     (if (nil? opt)
       (layout/render "empty-submit.html")
       (do (db/create-ratings! {:ratings [[id (Integer/parseInt itemid) (Integer/parseInt opt)]]})
+          (spk/update-user-guess! id item-count)
           (redirect "/data")))))
 
 (defroutes data-routes
