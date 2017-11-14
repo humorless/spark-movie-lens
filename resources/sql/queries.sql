@@ -25,11 +25,6 @@ WHERE sess = :sess
 DELETE FROM users
 WHERE id = :id
 
--- :name create-genres! :! :n
--- :doc create multiple genres with :tuple* parameter type
-INSERT INTO genres (id, unkonwn, action, animation, children, comedy, crime, documentary, drama, fantasy, film_noir, horror, musical, mystery, romance, sci_fi, thriller, war, western) 
-VALUES :tuple*:genres
-
 -- :name create-ratings! :! :n
 -- :doc create multiple rating records with :tuple* parameter type
 INSERT INTO ratings (user_id, item_id, rating)

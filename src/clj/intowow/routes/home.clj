@@ -1,5 +1,6 @@
 (ns intowow.routes.home
-  (:require [intowow.sparkling :as spk]
+  (:require [intowow.data :as data]
+            [intowow.sparkling :as spk]
             [intowow.layout :as layout]
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
@@ -20,7 +21,7 @@
   (let [raw-data (try
                    (spk/recommend uid number)
                    (catch Exception e nil))]
-    (log/info "recommend raw data with data type as: " (class raw-data) )
+    (log/info "recommend raw data with data type as: " (class raw-data))
     (if (nil? raw-data)
       (db/get-movie-average)
       (map #(zipmap [:item_id :name :r] %) raw-data))))
@@ -50,13 +51,18 @@
          [:input {:type "hidden" :name "itemid" :value (str iid)}]
          [:input {:type "submit" :value "Submit"}]]))
 
+(defn get-genre-by-id [id]
+  (html [:ul
+         (for [x (data/get-genre-by-id id)]
+           [:li x])]))
+
 (defn guest-data-page [{{start "start" length "length" draw "draw"}
                         :form-params :as req}]
   (let [s (Integer/parseInt start)
         len (Integer/parseInt length)
         d (Integer/parseInt draw)
         data (db/get-movie-average)
-        page (mapv #(vector (:item_id %) (:name %) (:r %))
+        page (mapv #(vector (:item_id %) (:name %) (get-genre-by-id (:item_id %)) (:r %))
                    (drop s (take (+ s len) data)))]
     (generate-string
      {:draw d
@@ -73,7 +79,7 @@
         len (Integer/parseInt length)
         d (Integer/parseInt draw)
         data (recommend-movies u)
-        page  (mapv #(vector (:item_id %) (:name %)  (:r %)  (user-submit-form  (:item_id %)))
+        page  (mapv #(vector (:item_id %) (:name %) (get-genre-by-id (:item_id %)) (:r %) (user-submit-form  (:item_id %)))
                     (drop s (take (+ s len) data)))]
     (log/info (take 2 data))
     (generate-string
@@ -93,7 +99,7 @@
 (defn rated-page [{{user-sess-id :identity} :session :as req}]
   (let [{id :id  :as user} (db/get-user-by-sess  {:sess user-sess-id})]
     (layout/render "rated.html"
-                   {:movies (db/get-movie-rating-by-id {:id id}) :h2 (:email user)})))
+                   {:movies (map #(assoc % :genre (data/get-genre-by-id (:item_id %))) (db/get-movie-rating-by-id {:id id})) :h2 (:email user)})))
 
 (defn get-login []
   (layout/render "login.html"))

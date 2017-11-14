@@ -1,5 +1,6 @@
 (ns intowow.core
-  (:require [intowow.handler :as handler]
+  (:require [intowow.data :as data]
+            [intowow.handler :as handler]
             [luminus.repl-server :as repl]
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
@@ -41,8 +42,8 @@
     (log/info "model training starts at" (time/now))
     (try
       (spark/re-train)
-        (catch Exception e
-          (log/error "Error in model training :" e)))
+      (catch Exception e
+        (log/error "Error in model training :" e)))
     (log/info "model training ends at" (time/now))))
 
 (defn init-spark
@@ -66,6 +67,7 @@
                         :started)]
     (log/info component "started"))
   (init-spark)
+  (data/init-genre!)
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]

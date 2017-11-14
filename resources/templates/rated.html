@@ -18,6 +18,9 @@
                 movie name
             </th>
             <th>
+                movie genre
+            </th>
+            <th>
                 my rating
             </th>
         </tr>
@@ -30,6 +33,13 @@
                 </td>
                 <td>
                     {{movie.name}}
+                </td>
+                <td>
+                   <ul>
+                     {% for genre in  movie.genre %}
+                     <li>{{genre}}</li>
+                     {% endfor %}
+                   </ul>
                 </td>
                 <td>
                     {{movie.r}}

@@ -26,13 +26,22 @@
          (map line->item-tuple)
          (into {}))))
 
+(def genre-data (atom []))
+
+(defn get-genre-by-id
+  "for every id, return the genre as
+   the form [children horror]"
+  [id]
+  (let [index (dec id)]
+    (mapv name (map key (filter #(= (val %) 1) (remove #(= (key %) :id) (get @genre-data index)))))))
+
 (defn line->genre-tuple [line]
   (let [line-list (s/split line #"\|")
         genre (drop 5 line-list)
         id (first line-list)]
     (->> (cons id genre)
          (map to-long)
-         (zipmap [:id :unknown :action :animation :children :comedy :crime :documentary :drama :fantasy :film_noir :horror :musical :mystery :romance :sci_fi :thriller :war :western]))))
+         (zipmap [:id :unknown :action :adventure :animation :children :comedy :crime :documentary :drama :fantasy :film_noir :horror :musical :mystery :romance :sci_fi :thriller :war :western]))))
 
 (defn load-genres
   "return vector as:
@@ -42,6 +51,14 @@
     (->> (line-seq rdr)
          (map line->genre-tuple)
          (into []))))
+
+(defn init-genre!
+  "initialize the genre-data as an array of map.
+  movie item id 1    ---> array index 0
+  movie item id 1682 ---> array index 1681
+  "
+  []
+  (reset! genre-data (load-genres "u.item")))
 
 (defn item->name [file]
   (let [items (load-items file)]
