@@ -42,6 +42,7 @@
     (log/info "model training starts at" (time/now))
     (try
       (spark/re-train)
+      (println "switch to the new matrix model!")
       (catch Exception e
         (log/error "Error in model training :" e)))
     (log/info "model training ends at" (time/now))))

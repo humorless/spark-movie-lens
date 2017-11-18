@@ -1,6 +1,7 @@
 (ns intowow.sparkling
   (:gen-class)
   (:require [intowow.db.core :as db]
+            [intowow.config :refer [env]]
             [clojure.string :as str]
             [sparkling.conf :as conf]
             [sparkling.core :as spark]
@@ -14,7 +15,7 @@
            [org.apache.spark.mllib.recommendation ALS Rating]))
 
 (defn trans-rating [item]
-  (spark/tuple (rand-int 10)
+  (spark/tuple 1
                (Rating. (:user_id item) (:item_id item) (:rating item))))
 
 (defn get-db-ratings [sc]
@@ -56,9 +57,9 @@
   "create a new model.
    Class: org.apache.spark.mllib.recommendation.MatrixFactorizationModel"
   []
-  (let [options {:rank 8
-                 :num-iter 1
-                 :lambda 1.0}]
+  (let [options {:rank (env :spark-rank)
+                 :num-iter (env :spark-iteration)
+                 :lambda (env :spark-lambda)}]
     (-> (get-db-ratings sc)
         (spark/values)
         (alternating-least-squares options))))

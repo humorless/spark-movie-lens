@@ -1,4 +1,7 @@
 {:dev true
  :port 3000
+ :spark-rank      8
+ :spark-iteration 3
+ :spark-lambda    0.1
  ;; when :nrepl-port is set the application starts the nREPL server on load
  :nrepl-port 7000}
