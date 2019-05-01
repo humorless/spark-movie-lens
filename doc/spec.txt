@@ -1,0 +1,35 @@
+CF(Collaborative Filtering)-based Movie Recommendation Service
+
+The website should provide the following features:
+1. For guest users (user not logged in), the website recommend movies with highest average ratings
+
+2. Users can sign-up for a new account, providing his/her
+   * email
+   * password
+   a) If the email has been registered before, the website will reject the sign-up
+
+3. Users can sign-in with his/her (email, password) pair
+
+4. After signing-in, the website will 
+   a) Show movies which have been rated by the user.
+   b) Recommend a list of movies, which have not been rated by the user.
+   c) The recommendation should based on CF and MovieLens dataset
+      Please refer:
+        MovieLens dataset :  http://grouplens.org/datasets/movielens/
+        CF : https://en.wikipedia.org/wiki/Collaborative_filtering
+      Using 100K MovieLens dataset is acceptable. However, using larger ones is encouraged.
+      You can use any CF algorithms or libraries. However, the hand-in should explain
+      why you chose them and how you used them in the project.
+
+5. For each recommended movie, user can rate it on a 1 star-5 stars scale.
+
+6. After the movie is rated, it is removed from the recommendation list.
+
+7. The website will remember these ratings, combine them with existing movie rating data,
+   and recompute the recommendation model on a periodical basis. For demostration, this
+   period should be as short as possible (< 10sec).
+
+8. The recommendation list will dynamically reloads itself based on the up-to-date model.
+   (So rated movies will never appear in recommendation list)
+   Note that reloading the whole webpage is unacceptable. The page should only update the
+   recommendation list part.
